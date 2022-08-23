@@ -32,7 +32,7 @@ class App extends React.Component {
           <Footer />
         </Router>
       </>
-    )
+    );
   }
 }
 

@@ -11,7 +11,7 @@ class Header extends React.Component {
         {/* PLACEHOLDER: render a navigation link to the about page */}
         <NavItem className='p-3'><Link to="/about" className="nav-link">About</Link></NavItem>
       </Navbar>
-    )
+    );
   }
 }
 
