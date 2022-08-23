@@ -6,6 +6,6 @@ class Profile extends Component {
     /* TODO: render information about the developers */
     return <p>Profile page coming soon</p>
   }
-};
+}
 
 export default Profile;
