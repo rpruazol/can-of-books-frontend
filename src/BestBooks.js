@@ -2,13 +2,16 @@ import React from 'react';
 import axios from 'axios';
 import Carousel from 'react-bootstrap/Carousel';
 import Container from 'react-bootstrap/Container';
-
+import Button from 'react-bootstrap/Button';
+import BookModal from './BookModal';
 
 class BestBooks extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      books: []
+      books: [],
+      show: false,
+      errorMessage: ''
     };
   }
 
@@ -20,17 +23,44 @@ class BestBooks extends React.Component {
     this.setState({ books: response.data });
   }
 
+  showBookModal = () => {
+    this.setState({ show: true });
+  };
+
+  handleCloseModal = (e) => {
+    console.log('handleCloseModal', e.target);
+    this.setState({ show: false });
+  };
+
+  createBook = async (bookToBeCreated) => {
+
+    try {
+      const config = {
+        method: 'post',
+        baseURL: process.env.REACT_APP_SERVER_URL,
+        url: '/books',
+        data: bookToBeCreated
+      };
+      console.log('config:', config);
+      const response = await axios(config);
+      console.log(response.data);
+      this.setState({ books: [...this.state.books, response.data] });
+    } catch (error) {
+      console.error('something went wrong ', error);
+      this.setState({ errorMessage: `status code: ${error.response} : ${error.response}` });
+    }
+  };
+
   render() {
 
-    /* TODO: render all the books in a Carousel */
 
     return (
       <>
         <h2>My Essential Lifelong Learning &amp; Formation Shelf</h2>
 
         {this.state.books.length > 0 ? (
-          <Container>
-            <Carousel className="m-auto align-self-center w-50">
+          <Container className="m-auto align-self-center w-50">
+            <Carousel >
               {this.state.books.map((book) => (
                 <Carousel.Item key={book._id}>
                   <img
@@ -46,6 +76,12 @@ class BestBooks extends React.Component {
                 </Carousel.Item>
               ))}
             </Carousel>
+            <Button className="m-auto align-self-center" onClick={this.showBookModal}>Add Book</Button>
+            <BookModal
+              createBook={this.createBook}
+              show={this.state.show}
+              handleCloseModal={this.handleCloseModal}
+            />
           </Container>
         ) : (
           <h3>No Books Found :(</h3>
