@@ -10,6 +10,7 @@ export default class BookModal extends React.Component {
 
   onSubmit = (event) => {
     event.preventDefault();
+    console.log('event.target:', event.target);
     const newBook = {
       title: event.target.bookTitle.value,
       description: event.target.bookDescription.value,
@@ -18,6 +19,7 @@ export default class BookModal extends React.Component {
     console.log('newBook:', newBook);
 
     this.props.createBook(newBook);
+    this.props.handleCloseModal();
   };
 
 
@@ -54,7 +56,7 @@ export default class BookModal extends React.Component {
             </Form.Group>
             <Container >
               <Button className="text-right" variant="secondary" onClick={this.props.handleCloseModal}>Close</Button>
-              <Button variant="primary" type="submit" onClick={this.props.createBook}>Submit Book</Button>
+              <Button variant="primary" type="submit">Submit Book</Button>
             </Container>
           </Form>
         </Modal.Body>

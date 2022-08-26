@@ -29,8 +29,8 @@ class BestBooks extends React.Component {
     this.setState({ show: true }, () => console.log('show state: ', this.state.show));
   };
 
-  handleCloseModal = (e) => {
-    console.log('handleCloseModal', e.target);
+  handleCloseModal = () => {
+    //console.log('handleCloseModal', e.target);
     this.setState({ show: false });
   };
 
@@ -56,16 +56,19 @@ class BestBooks extends React.Component {
   deleteBook = async (bookToBeDeleted) => {
     console.log('deleteBook', bookToBeDeleted);
     try {
-      const config = {
-        method: 'delete',
-        baseURL: process.env.REACT_APP_SERVER_URL,
-        url: `/book/${bookToBeDeleted}`
-      };
-      const response = await axios(config);
-      const booksArray = this.state.books.filter(book => book._id !== bookToBeDeleted);
-      this.setState({ books: booksArray });
-      console.log(response);
-      console.log('deleted the book!');
+      const proceed = window.confirm(`Are you sure you want to delete this book?`);
+      if (proceed) {
+        const config = {
+          method: 'delete',
+          baseURL: process.env.REACT_APP_SERVER_URL,
+          url: `/book/${bookToBeDeleted}`
+        };
+        const response = await axios(config);
+        const booksArray = this.state.books.filter(book => book._id !== bookToBeDeleted);
+        this.setState({ books: booksArray });
+        console.log(response);
+        console.log('deleted the book!');
+      }
     } catch (e) {
       console.error(e);
     }
@@ -92,17 +95,14 @@ class BestBooks extends React.Component {
                     <h3>{book.title}</h3>
                     <p>{book.description}</p>
                     <p>{book.status}</p>
+                    <Button className="m-6" onClick={() => this.deleteBook(book._id)}>Delete Book</Button>
                   </Carousel.Caption>
-                  <Button className="m-3" onClick={() => this.deleteBook(book._id)} className="m-auto align-self-center">Delete Book</Button>
+
 
                 </Carousel.Item>
               ))}
             </Carousel>
-            <BookModal
-              createBook={this.createBook}
-              show={this.state.show}
-              handleCloseModal={this.handleCloseModal}
-            />
+
           </Container>
         ) : (
           <>
@@ -110,6 +110,11 @@ class BestBooks extends React.Component {
           </>
         )}
         <Button className="m-auto align-self-center" onClick={this.showBookModal}>Add Book</Button>
+        <BookModal
+          createBook={this.createBook}
+          show={this.state.show}
+          handleCloseModal={this.handleCloseModal}
+        />
       </>
     );
   }
