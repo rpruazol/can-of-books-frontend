@@ -11,7 +11,9 @@ class BestBooks extends React.Component {
     this.state = {
       books: [],
       show: false,
-      errorMessage: ''
+      errorMessage: '',
+      update: false,
+      book: {}
     };
   }
 
@@ -31,7 +33,7 @@ class BestBooks extends React.Component {
 
   handleCloseModal = () => {
     //console.log('handleCloseModal', e.target);
-    this.setState({ show: false });
+    this.setState({ show: false, currentBook: {} });
   };
 
   createBook = async (bookToBeCreated) => {
@@ -74,6 +76,14 @@ class BestBooks extends React.Component {
     }
   };
 
+  updateModal = (book) => {
+    this.setState( {update: true, currentBook: book} );
+    this.showBookModal();
+  };
+
+  
+
+
   render() {
 
 
@@ -96,6 +106,7 @@ class BestBooks extends React.Component {
                     <p>{book.description}</p>
                     <p>{book.status}</p>
                     <Button className="m-6" onClick={() => this.deleteBook(book._id)}>Delete Book</Button>
+                    <Button onClick={() => this.updateModal(book)}>Update Book</Button>
                   </Carousel.Caption>
 
 
@@ -114,6 +125,8 @@ class BestBooks extends React.Component {
           createBook={this.createBook}
           show={this.state.show}
           handleCloseModal={this.handleCloseModal}
+          update={this.state.update}
+          currentBook={this.state.currentBook}
         />
       </>
     );
