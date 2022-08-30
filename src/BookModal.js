@@ -20,7 +20,8 @@ export default class BookModal extends React.Component {
           <BookForm
             handleCloseModal={this.props.handleCloseModal}
             createBook={this.props.createBook}
-            update={this.props.update}
+            updateBook={this.props.updateBook}
+            updateClicked={this.props.updateClicked}
             currentBook={this.props.currentBook}
           />
         </Modal.Body>

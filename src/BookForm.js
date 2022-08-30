@@ -2,69 +2,51 @@ import React from 'react';
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import axios from 'axios';
+
 
 class BookForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      //book: null,
-      update: this.props.update,
-      currentBook: this.props.currentBook
+      _id: this.props.currentBook?._id,
+      title: this.props.currentBook?.title,
+      description: this.props.currentBook?.description,
+      status: this.props.currentBook?.status
     };
   }
 
-  onSubmit = (event) => {
-    event.preventDefault();
-    const newBook = {
-      title: event.target.bookTitle.value,
-      description: event.target.bookDescription.value,
-      status: event.target.bookStatus.value
-    };
+  handleTitleChange = (e) => this.setState({ title: e.target.value});
+  handleDescriptionChange = (e) => this.setState({ description: e.target.value });
+  handleStatusChange = (e) => this.setState({ status: e.target.value });
 
-    console.log('Update Boolean value:', this.state.update);
-    if (this.state.update) {
-      this.props.updateBook(newBook);
-    } else {
+  handleSubmit = (e) => {
+    e.preventDefault();
+    //Update Book
+    if(this.props.updateClicked){
+      this.props.updateBook(this.state);
+    } 
+    //Add Book
+    else {
+      const newBook = { 
+        title: this.state.title, 
+        description: this.state.description, 
+        status: this.state.status 
+      };
       this.props.createBook(newBook);
     }
-
     this.props.handleCloseModal();
-  };
-
-  updateBook = (newBook) => {
-    try {
-      const config = {
-        method: 'put',
-        baseURL: process.env.REACT_APP_SERVER_URL,
-        url: '/books',
-        data: newBook
-      };
-      axios(config);
-    } catch (e) {
-      console.log(e);
-    }
-
-  };
-
-  handleTitleChange = (e) => {
-    const book = { ...this.state.currentBook };
-    book.title = e.target.value;
-    this.setState({ currentBook: book });
-  };
-
+  }; 
 
   render() {
-    
     return (
-      <Form onSubmit={this.onSubmit}>
+      <Form onSubmit={this.handleSubmit}>
         <Form.Group className="mb-3" controlId="bookTitle">
           <Form.Label>Book Title</Form.Label>
           <Form.Control
             type="text"
             autoFocus
-            defaultValue={this.state.currentBook.title || ""}
-            onChange={() => this.handleTitleChange}
+            defaultValue={this.state.title || ""}
+            onChange={this.handleTitleChange}
           />
         </Form.Group>
         <Form.Group className="mb-3" controlId="bookDescription">
@@ -72,7 +54,8 @@ class BookForm extends React.Component {
           <Form.Control
             as="textarea"
             rows={3}
-            defaultValue={this.state.currentBook?.description || ""}
+            defaultValue={this.state.description || ""}
+            onChange={this.handleDescriptionChange}
           />
         </Form.Group>
         <Form.Group className="mb-3" controlId="bookStatus">
@@ -80,7 +63,8 @@ class BookForm extends React.Component {
           <Form.Control
             as="textarea"
             rows={2}
-            defaultValue={this.state.currentBook || ""}
+            defaultValue={this.state.status || ""}
+            onChange={this.handleStatusChange}
           />
         </Form.Group>
         <Container >
