@@ -4,6 +4,7 @@ import Carousel from 'react-bootstrap/Carousel';
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 import BookModal from './BookModal';
+import Spinner from 'react-bootstrap/Spinner';
 
 class BestBooks extends React.Component {
   constructor(props) {
@@ -13,7 +14,8 @@ class BestBooks extends React.Component {
       currentBook: {},
       show: false,
       updateClicked: false,
-      errorMessage: ''
+      errorMessage: '',
+      isLoading: false
     };
   }
 
@@ -55,6 +57,7 @@ class BestBooks extends React.Component {
     try {
       const proceed = window.confirm(`Are you sure you want to delete this book?`);
       if (proceed) {
+        this.setState({ isLoading: true });
         const config = {
           method: 'delete',
           baseURL: process.env.REACT_APP_SERVER_URL,
@@ -62,20 +65,21 @@ class BestBooks extends React.Component {
         };
         await axios(config);
         const booksArray = this.state.books.filter(book => book._id !== bookToBeDeleted);
-        this.setState({ books: booksArray });
+        this.setState({ books: booksArray, isLoading: false });
       }
     } catch (e) {
       console.error(e);
     }
+
   };
 
   updateModal = (book) => {
-    this.setState( {updateClicked: true, currentBook: book} );
+    this.setState({ updateClicked: true, currentBook: book });
     this.showBookModal();
   };
 
   updateBook = async (updatedBook) => {
-    try{
+    try {
       const config = {
         method: 'put',
         baseURL: process.env.REACT_APP_SERVER_URL,
@@ -86,11 +90,11 @@ class BestBooks extends React.Component {
       const updatedBooks = this.state.books.filter((book) => book._id !== updatedBook._id);
       this.setState({ books: [...updatedBooks, response.data], updateClicked: false }, () => console.log('updateClicked: ', this.state.updateClicked));
 
-    }catch(error) {
+    } catch (error) {
       console.error(error);
     }
   };
-  
+
 
 
   render() {
@@ -112,7 +116,16 @@ class BestBooks extends React.Component {
                     <h3>{book.title}</h3>
                     <p>{book.description}</p>
                     <p>{book.status}</p>
-                    <Button className="m-6" onClick={() => this.deleteBook(book._id)}>Delete Book</Button>
+                    <Button className="m-3" disabled={this.state.isLoading} onClick={() => this.deleteBook(book._id)}>{this.state.isLoading ? (<><Spinner
+                      as="span"
+                      animation="border"
+                      size="sm"
+                      role="status"
+                      aria-hidden="true"
+                    /><span>Loading..</span></>)
+                      : 'Delete Book'}
+
+                    </Button>
                     <Button onClick={() => this.updateModal(book)}>Update Book</Button>
                   </Carousel.Caption>
 
