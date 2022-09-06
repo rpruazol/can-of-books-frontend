@@ -5,6 +5,9 @@ import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 import BookModal from './BookModal';
 import Spinner from 'react-bootstrap/Spinner';
+import { withAuth0 } from '@auth0/auth0-react';
+//import { useAuth0 } from '@auth0/auth0-react';
+
 
 class BestBooks extends React.Component {
   constructor(props) {
@@ -22,10 +25,24 @@ class BestBooks extends React.Component {
 
   /* TODO: Make a GET request to your API to fetch all the books from the database  */
   async componentDidMount() {
-    const url = `${process.env.REACT_APP_SERVER_URL}/books`;
-    const response = await axios.get(url);
-    this.setState({ books: response.data });
+    if (this.props.auth0.isAuthenticated) {
+      this.getBooks();
+    }
   }
+
+  getBooks = async () => {
+    const res = await this.props.auth0.getIdTokenClaims();
+    const jwt = res.__raw;
+
+    const config = {
+      headers: { "Authorization": `Bearer ${jwt}` },
+      method: 'get',
+      baseURL: process.env.REACT_APP_SERVER_URL,
+      url: '/books'
+    };
+    const response = await axios(config);
+    this.setState({ books: response.data });
+  };
 
   showBookModal = () => {
     this.setState({ show: true }, () => console.log('show state: ', this.state.show));
@@ -154,4 +171,4 @@ class BestBooks extends React.Component {
   }
 }
 
-export default BestBooks;
+export default withAuth0(BestBooks);

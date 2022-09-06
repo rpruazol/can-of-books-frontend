@@ -30,6 +30,10 @@ Express, MongoDB, Mongoose
 ## Credit and Collaborations
 Ray Ruazol, Monika Davies
 
+## Photo Credit
+Bookshelf Photo by Alfons Morales
+https://unsplash.com/photos/YLSwjSy7stw
+
 
 ## Logistical
 
