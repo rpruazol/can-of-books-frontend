@@ -15,27 +15,27 @@ class BookForm extends React.Component {
     };
   }
 
-  handleTitleChange = (e) => this.setState({ title: e.target.value});
+  handleTitleChange = (e) => this.setState({ title: e.target.value });
   handleDescriptionChange = (e) => this.setState({ description: e.target.value });
   handleStatusChange = (e) => this.setState({ status: e.target.value });
 
   handleSubmit = (e) => {
     e.preventDefault();
     //Update Book
-    if(this.props.updateClicked){
+    if (this.props.updateClicked) {
       this.props.updateBook(this.state);
-    } 
+    }
     //Add Book
     else {
-      const newBook = { 
-        title: this.state.title, 
-        description: this.state.description, 
-        status: this.state.status 
+      const newBook = {
+        title: this.state.title,
+        description: this.state.description,
+        status: this.state.status
       };
       this.props.createBook(newBook);
     }
     this.props.handleCloseModal();
-  }; 
+  };
 
   render() {
     return (
