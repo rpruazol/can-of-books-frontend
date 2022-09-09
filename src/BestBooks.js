@@ -25,6 +25,7 @@ class BestBooks extends React.Component {
 
   /* TODO: Make a GET request to your API to fetch all the books from the database  */
   async componentDidMount() {
+    console.log('this.props.auth0.isAuthenticated', this.props.auth0.isAuthenticated);
     if (this.props.auth0.isAuthenticated) {
       this.getBooks();
     }
@@ -33,7 +34,7 @@ class BestBooks extends React.Component {
   getBooks = async () => {
     const res = await this.props.auth0.getIdTokenClaims();
     const jwt = res.__raw;
-
+    console.log('res', res);
     const config = {
       headers: { "Authorization": `Bearer ${jwt}` },
       method: 'get',
@@ -54,14 +55,17 @@ class BestBooks extends React.Component {
   };
 
   createBook = async (bookToBeCreated) => {
-
+    const res = await this.props.auth0.getIdTokenClaims();
+    const jwt = res.__raw;
     try {
       const config = {
+        headers: { "Authorization": `Bearer ${jwt}` },
         method: 'post',
         baseURL: process.env.REACT_APP_SERVER_URL,
         url: '/books',
         data: bookToBeCreated
       };
+      console.log('config - ', config);
       const response = await axios(config);
       this.setState({ books: [...this.state.books, response.data] });
     } catch (error) {
@@ -71,11 +75,14 @@ class BestBooks extends React.Component {
   };
 
   deleteBook = async (bookToBeDeleted) => {
+    const res = await this.props.auth0.getIdTokenClaims();
+    const jwt = res.__raw;
     try {
       const proceed = window.confirm(`Are you sure you want to delete this book?`);
       if (proceed) {
         this.setState({ isLoading: true });
         const config = {
+          headers: { "Authorization": `Bearer ${jwt}` },
           method: 'delete',
           baseURL: process.env.REACT_APP_SERVER_URL,
           url: `/book/${bookToBeDeleted}`
@@ -96,8 +103,11 @@ class BestBooks extends React.Component {
   };
 
   updateBook = async (updatedBook) => {
+    const res = await this.props.auth0.getIdTokenClaims();
+    const jwt = res.__raw;
     try {
       const config = {
+        headers: { "Authorization": `Bearer ${jwt}` },
         method: 'put',
         baseURL: process.env.REACT_APP_SERVER_URL,
         url: `/books/${updatedBook._id}`,
